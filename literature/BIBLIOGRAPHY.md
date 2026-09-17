@@ -1,9 +1,5 @@
 # Bibliography
 
-Minimum of 8 relevant academic papers across the team (~2–3 per student). Add the PDF (when legally/permissibly available) into this folder, and add a full citation entry below with an active link. Group by team member so it's clear who sourced/read what.
-
-Also maintain [references.bib](references.bib) with BibTeX entries for the same papers (many reference managers / Google Scholar can export this directly).
-
 ## Srinath Venkatesh
 
 1. Allouah, A., Besbes, O., Figueroa, J. D., Kanoria, Y., & Kumar, A. (2025). What is your AI agent buying? Evaluation, implications, and emerging questions for agentic e-commerce [Preprint]. arXiv. — https://arxiv.org/abs/2508.02630
