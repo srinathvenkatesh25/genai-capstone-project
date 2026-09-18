@@ -22,6 +22,7 @@ Bottom caption: “Prompt-to-Plate: A realistic plan, an optimized cart, and hea
 
 
 ### 2) Sneha
+basis this project, i want you to develop a pictire of how exactly this will be used like a comic storyline showing it in action. like storyboard https://github.com/srinathvenkatesh25/genai-capstone-project
 
 ### 3) Srinath
 #### Prompt 1: I want to build a storyboard (6-7 comic images) for the below scenario based on my gen ai project.Imagine you are a student on a sunday evening and you are unsure of what to meal prep for the rest of the week and buy groceries accordingly. The user then uses our app "prompt-to-plate" to enter their details, dietry prefernece, macros they want to hit (protein = 100 gms/day total calories = 2500 etc) and then the app should be able to browse listing of nearby stores and look for ingreditents accoridng to the dietry preference anc come up with recipes, upon approval generate a cart for you. by the end of it you have meal prep plans and recipes for each day along with a cart with all the items required as per your budget 
