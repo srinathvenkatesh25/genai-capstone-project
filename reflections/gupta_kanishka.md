@@ -1,9 +1,7 @@
-# Student Reflection — Kanishka Gupta
+# Student Reflection - Kanishka Gupta
 
 **Student Name:** Kanishka Gupta  
 **File Name:** `gupta_kanishka.md`
-
----
 
 # Paper 1: Behavioral Science-Informed Agentic Workflows
 
