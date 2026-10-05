@@ -1,6 +1,5 @@
 # Prompt-to-Plate: An Agentic AI Platform for Instant Meal Planning and Grocery Automation
 
-> **Status:** 🚧 Checkpoint 2 — Prompt-Based Validation & Concept Design
 
 Prompt-to-Plate helps users turn dietary goals, preferences, pantry contents, budget, schedule, and other real-world constraints into practical weekly meal plans, validated grocery carts, and adaptive coaching.
 
@@ -14,10 +13,10 @@ Rather than functioning as a one-time meal generator, Prompt-to-Plate explores a
 
 | Name | Research Topics and Responsibilities | Contact |
 |---|---|---|
-| Srinath Venkatesh | <ul><li><strong>Checkpoint 1:</strong> Researched AI-agent purchasing and shopping evaluation, set up the GitHub repository, led product ideation, and sourced literature.</li><li><strong>Checkpoint 2:</strong> Built the interactive proof-of-concept and wrote the detailed design specification. Contributed to the prompting protocol and supported the prompting study and receipt collection.</li></ul> | TBD |
-| Chantrice Santiago | <ul><li><strong>Checkpoint 1:</strong> Researched LLM-based multi-agent systems and collaborative multi-constraint planning, created the proposal, populated repository content, and contributed to product ideation.</li><li><strong>Checkpoint 2:</strong> Contributed to the prompting protocol, ran the prompting study and saved receipts, and wrote the shared theoretical discussion.</li></ul> | TBD |
-| Kanishka Gupta | <ul><li><strong>Checkpoint 1:</strong> Researched personalized nutrition coaching and ingredient substitution, evaluated technical feasibility, and co-led the technical assessment.</li><li><strong>Checkpoint 2:</strong> Read Gonzalez et al. (2026) and drafted the theory claim, then led evidence-to-theory feature prioritization after the team compared interview results. Documented hypothesis shifts and created a prioritized feature matrix with empirical and theory-linked justification for every feature.</li></ul> | TBD |
-| Sneha Vyas | <ul><li><strong>Checkpoint 1:</strong> Researched generative meal planning and nutrition recommendation, contributed to product ideation, and created the presentation slides.</li><li><strong>Checkpoint 2:</strong> Led the speed-dating interviews and built the gap-analysis matrix.</li></ul> | TBD |
+| Srinath Venkatesh | <ul><li><strong>Checkpoint 1:</strong> Researched AI-agent purchasing and shopping evaluation, set up the GitHub repository, led product ideation, and sourced literature.</li><li><strong>Checkpoint 2:</strong> Built the interactive proof-of-concept and wrote the detailed design specification. Contributed to the prompting protocol, supported the prompting study and receipt collection, and supported the speed-dating interviews.</li></ul> | TBD |
+| Chantrice Santiago | <ul><li><strong>Checkpoint 1:</strong> Researched LLM-based multi-agent systems and collaborative multi-constraint planning, created the proposal, populated repository content, and contributed to product ideation.</li><li><strong>Checkpoint 2:</strong> Contributed to the prompting protocol, ran the prompting study and saved receipts, wrote the shared theoretical discussion, and supported the speed-dating interviews.</li></ul> | TBD |
+| Kanishka Gupta | <ul><li><strong>Checkpoint 1:</strong> Researched personalized nutrition coaching and ingredient substitution, evaluated technical feasibility, and co-led the technical assessment.</li><li><strong>Checkpoint 2:</strong> Read Gonzalez et al. (2026) and drafted the theory claim, then led evidence-to-theory feature prioritization after the team compared interview results. Documented hypothesis shifts, created a prioritized feature matrix with empirical and theory-linked justification for every feature, and supported the speed-dating interviews.</li></ul> | TBD |
+| Sneha Vyas | <ul><li><strong>Checkpoint 1:</strong> Researched generative meal planning and nutrition recommendation, contributed to product ideation, and created the presentation slides.</li><li><strong>Checkpoint 2:</strong> Led the speed-dating interviews, built the gap-analysis matrix, and supported the speed-dating interviews.</li></ul> | TBD |
 
 ---
 
