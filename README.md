@@ -14,12 +14,14 @@ Rather than functioning as a one-time meal generator, Prompt-to-Plate explores a
 
 | Name | Research Topics and Responsibilities | Contact |
 |---|---|---|
-| Srinath Venkatesh | Researched AI-agent purchasing and shopping evaluation, including agentic e-commerce risks, product retrieval, safety compliance, position bias, and seller influence. Set up the GitHub repository, led product ideation, and sourced literature for the team. | TBD |
-| Chantrice Santiago | Researched LLM-based multi-agent systems and collaborative multi-constraint planning, including agent roles, task decomposition, supervision, communication, and reliability. Created the proposal document, populated GitHub file contents, and contributed to product ideation. | TBD |
-| Kanishka Gupta | Researched personalized nutrition coaching and food ingredient substitution, including behavioral barriers, agentic coaching workflows, allergy-aware substitutions, transparency, and safety. Evaluated the project's technical feasibility and co-led the technical assessment during product ideation. | TBD |
-| Sneha Vyas | Researched generative meal planning and nutrition recommendation, including NutriGen, validated nutrition data, generative models, optimization, and ChatGPT-supported recommendations. Contributed to product ideation and created the PowerPoint presentation slides. | TBD |
+| Srinath Venkatesh | <ul><li><strong>Checkpoint 1:</strong> Researched AI-agent purchasing and shopping evaluation, set up the GitHub repository, led product ideation, and sourced literature.</li><li><strong>Checkpoint 2:</strong> Built the interactive proof-of-concept and wrote the detailed design specification. Contributed to the prompting protocol and supported the prompting study and receipt collection.</li></ul> | TBD |
+| Chantrice Santiago | <ul><li><strong>Checkpoint 1:</strong> Researched LLM-based multi-agent systems and collaborative multi-constraint planning, created the proposal, populated repository content, and contributed to product ideation.</li><li><strong>Checkpoint 2:</strong> Contributed to the prompting protocol, ran the prompting study and saved receipts, and wrote the shared theoretical discussion.</li></ul> | TBD |
+| Kanishka Gupta | <ul><li><strong>Checkpoint 1:</strong> Researched personalized nutrition coaching and ingredient substitution, evaluated technical feasibility, and co-led the technical assessment.</li><li><strong>Checkpoint 2:</strong> Read Gonzalez et al. (2026) and drafted the theory claim, then led evidence-to-theory feature prioritization after the team compared interview results. Documented hypothesis shifts and created a prioritized feature matrix with empirical and theory-linked justification for every feature.</li></ul> | TBD |
+| Sneha Vyas | <ul><li><strong>Checkpoint 1:</strong> Researched generative meal planning and nutrition recommendation, contributed to product ideation, and created the presentation slides.</li><li><strong>Checkpoint 2:</strong> Led the speed-dating interviews and built the gap-analysis matrix.</li></ul> | TBD |
 
 ---
+
+# Checkpoint 1 — Project Kickoff, Literature Review & Proposal
 
 ## Problem Statement & Motivation
 
@@ -121,49 +123,49 @@ The intended design therefore combines **AI reasoning, grounded computation, and
 
 # Checkpoint 2 — Prompt-Based Validation & Concept Design
 
-Checkpoint 2 moves Prompt-to-Plate from an initial concept toward **evidence-based validation and design refinement**.
+Checkpoint 2 moves Prompt-to-Plate from an initial concept toward **evidence-based validation, design refinement, and an interactive proof-of-concept**. The team completed a theory-tagged prompting protocol with typical, edge, and failure scenarios; tested Claude, Copilot, and Gemini; and saved both raw outputs and structured evaluations.
 
-The goal is not to assume that the proposed architecture works. Instead, the team will test realistic scenarios, document failures, interpret those failures through a human–AI teaming and complementarity lens, and use that evidence to refine the design.
+The study found that the models generally preserved allergy safeguards, disclosed budget conflicts, and left checkout to the user, but they were inconsistent at nutrition arithmetic, simultaneous constraint satisfaction, ingredient-to-cart coverage, feasibility judgments, and handling missing product data. These findings support the prototype's division of work: GenAI proposes and explains, deterministic software validates measurable constraints, and people approve plans, substitutions, and shopping actions.
 
 The validation process follows:
 
 **Receipt → Theory → Design**
 
 ### Receipt
-Collect evidence from prompting experiments, AI-tool outputs, and user interviews or concept evaluation.
+Prompting receipts and scored evaluations are stored in `validation/transcripts/`; speed-dating interviews add user evidence about practicality, trust, and control.
 
 ### Theory
-Interpret observed failures using the required human–AI teaming and complementarity framework, including concepts such as reasoning, memory, attention, meta-coordination, and role partitioning.
+Observed failures are interpreted through human–AI complementarity, especially role partitioning, verification, attention, and meta-coordination.
 
 ### Design
-Translate the evidence and theoretical interpretation into concrete requirements, interaction changes, validation mechanisms, and prototype decisions.
+Evidence is translated into prioritized requirements, deterministic validation, visible uncertainty, targeted revision, and explicit human approval before shopping or checkout.
 
 ---
 
 ## Checkpoint 2 Validation Focus
 
-Prompt-to-Plate will be evaluated across several core capabilities:
+Current evidence and continued prototype evaluation focus on these capabilities:
 
 ### 1. Constraint Understanding
-Can the system correctly interpret and maintain dietary restrictions, allergies, budget, schedule, cooking ability, preferences, and pantry context?
+Models usually recognized explicit safety constraints, but performance weakened as nutrition, budget, variety, preparation time, and inventory requirements accumulated.
 
 ### 2. Multi-Constraint Meal Planning
-Can the system generate practical meal plans while satisfying multiple simultaneous constraints?
+Generated plans sometimes contradicted their own feasibility claims or missed nutrition and repetition limits, showing the need for independent checks.
 
 ### 3. Grounding & Validation
-Where can GenAI reason effectively, and where are trusted data sources or deterministic checks required?
+Nutrition totals, budget arithmetic, product availability, and ingredient coverage require grounded data and deterministic validation rather than model self-report.
 
 ### 4. Pantry & Grocery Reasoning
-Can the system distinguish between existing and missing ingredients and appropriately prepare grocery recommendations?
+Tests exposed missing ingredients, unverifiable serving quantities, and cart totals that did not consistently match itemized products.
 
 ### 5. Human–AI Coordination
-Which decisions can be delegated to AI, and where should clarification, review, or explicit human approval be required?
+Models generally respected the no-checkout boundary; substitutions, ambiguous allergen data, budget changes, and final carts still require explicit human review.
 
 ### 6. Behavioral Adaptation
-Can user adherence and feedback meaningfully inform future planning rather than assuming perfect compliance?
+Interview findings are being used to prioritize practical revision controls and lifestyle fit; long-term adherence learning remains outside the current prototype.
 
 ### 7. Failure & Edge-Case Handling
-How does the system respond to conflicting constraints, missing information, unsafe recommendations, unavailable products, or ambiguous user requests?
+Safety refusals were often strong, but uncertainty handling varied: some outputs refused unsupported products while others invented missing product details or produced internally inconsistent calculations.
 
 ---
 
