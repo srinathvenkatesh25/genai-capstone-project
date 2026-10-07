@@ -1,37 +1,165 @@
-# Part 6: Human–AI Teaming Theory Lens
+# Prompt-to-Plate: Human-AI Complementarity Framework
+**Team:** Srinath Venkatesh, Chantrice Santiago, Kanishka Gupta, Sneha Vyas  
+**Date:** October 5, 2026  
+**Reference:** Gonzalez et al. (2026). Toward a Science of Human-AI Teaming for Decision Making
 
-## Working Theory Claim
+---
 
-Prompt-to-Plate will achieve human–AI complementarity when the combined workflow produces a more usable and reliable meal plan and cart than either a person or an AI system working alone. This requires the AI to generate options and perform repeatable checks, while the user supplies lifestyle context, resolves trade-offs, and approves consequential decisions. Gonzalez et al. (2026) define complementarity as a human–AI team outperforming both its human-only and AI-only alternatives; adding a person to the workflow does not establish that benefit by itself.
+## Theory Claim
 
-## Cognitive Diagnosis and Division of Labor
+**Our hybrid should beat human-alone and AI-alone at identifying the healthiest next step a user can realistically sustain because humans own judgment about what they'll actually adhere to, and AI owns rapid multi-constraint reconciliation and nutrition validation.**
 
-| **Dimension**         | **AI responsibility**                                                                                                                                 | **Human responsibility**                                                                                                 | **Division Relevance**                                                                                                                                                            |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Reasoning**         | Generate meal options; calculate quantities and cart totals; check stated nutrition, allergy, time, and budget constraints; identify conflicts.       | Set goals and priorities; decide whether a proposed compromise fits their life; approve any change to a hard constraint. | AI can check many combinations, but a plausible answer may still violate a constraint. Humans provide context and judgment (Gonzalez et al., 2026).                               |
-| **Memory**            | Carry the user’s stated preferences and approved plan into ingredient and cart generation; retain product identifiers, prices, and evidence sources.  | Confirm that stored preferences remain accurate and correct outdated information.                                        | A cart cannot be trusted if the system invents a product or forgets an ingredient. Gonzalez et al. (2026) emphasize retrievable information with provenance and human correction. |
-| **Attention**         | Bring exceptions to the user’s attention: uncertain allergen information, unavailable products, missed targets, time violations, and budget overruns. | Review the exceptions and decide which acceptable alternative to use.                                                    | The interface should focus attention on decisions that need it, without asking users to manually recheck every routine calculation (Gonzalez et al., 2026).                       |
-| **Meta-coordination** | Route generation, validation, cart preparation, and exception handling in a defined order; stop when required evidence or approval is missing.        | Retain authority over substitutions, relaxed requirements, and checkout.                                                 | Clear decision rights and escalation points help prevent an AI-generated plan from being mistaken for an approved purchase (Gonzalez et al., 2026).                               |
+---
 
-## Evidence → Theory → Design
+## Why This Matters
 
-The receipts below are from the controlled prompts and synthetic Costco catalog in the[ prompting protocol](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/PROMPTING_PROTOCOL.md). They show observed failures in these runs, rather than failure rates across repeated trials.
+Prompt-to-Plate solves a multi-objective optimization problem under uncertainty: users must balance nutrition goals (calories, macros, fiber), practical constraints (budget, cooking time, allergies, pantry inventory), cultural preferences (cuisine, familiar foods), and sustainability (will they actually eat this?).
 
-| **Failure receipt: model and test case**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | **Theoretical interpretation**                                                                                                                                                                                                                                                                                                                 | **Design implication**                                                                                                                                                                                                                                                                        |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Gemini 3.6 Flash, Prompt 1 (typical nutrition-constrained plan):** It listed products outside the supplied catalog, priced bananas differently from the catalog, and assumed pantry staples despite the no-pantry instruction. See the[ evaluated receipt](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/Gemini_outputs.md) and[ raw output](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/raw-outputs/Gemini_raw_outputs.md#L727).                                                                                                                                                                                                                                                                 | **Memory:** The AI substituted plausible information for verified catalog and user data. Gonzalez et al. (2026) argue that AI-supported memory needs provenance and human correction; fluent recall alone cannot establish what is available to purchase.                                                                                      | Match every cart item and price to a catalog record. Carry an explicit **no pantry inventory** state into cart generation; block or flag unsupported items before presenting a cart.                                                                                                          |
-| **Gemini 3.6 Flash, Prompt 4 (edge: high-protein vegetarian plan with a severe nut allergy):** Gemini described its selections as completely free of peanuts and tree nuts, although the catalog lacked full ingredient and cross-contact information. It also assumed pantry staples despite the no-pantry rule, leaving **12 of 21** meal ingredients out of the cart. Day 1 supplied **98 g protein** against a **120 g minimum**, while the displayed cart appeared to fit the $75 budget. See the[ evaluated receipt](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/Gemini_outputs.md) and[ raw output](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/raw-outputs/Gemini_raw_outputs.md#L1642).  | **Reasoning, memory, and meta-coordination:** The model treated missing safety evidence and pantry information as resolved, then continued despite an outstanding approval decision. This illustrates Gonzalez et al.’s (2026) need for traceable evidence, explicit decision rights, and escalation when the AI cannot establish compliance.  | Check planned ingredients against the grocery list and nutrition targets before presenting a plan as feasible. Mark substitutions and product-level allergen safety as **unverified** until adequate evidence is available; pause for user review when a required choice remains unresolved.  |
-| **Microsoft 365 Copilot (GPT-5 chat), Prompt 1 (typical nutrition-constrained plan):** It reported an estimated cost but provided no seven-day plan or itemized cart, so the claimed result could not be checked. See the[ evaluated receipt](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/Copilot_outputs.md) and[ raw output](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/raw-outputs/Copilot_raw_outputs.md#L280).                                                                                                                                                                                                                                                                              | **Attention and meta-coordination:** A high-level cost estimate displaced the concrete outputs needed for scrutiny. Complementarity requires an interaction structure in which the human can inspect and question the AI’s work, rather than accept an unsupported conclusion (Gonzalez et al., 2026).                                         | Require complete meal and cart records before showing a result as ready for review. If the workflow cannot produce them, explain what is missing and stop.                                                                                                                                    |
-| **Gemini 3.6 Flash, Prompt 5 (failure case: allergen and unsupported data):** It refused shrimp but invented a high-protein curry kit, including unsupported price and nutrition information, in an allergy-sensitive scenario. See the[ evaluated receipt](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/Gemini_outputs.md) and[ raw output](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/raw-outputs/Gemini_raw_outputs.md#L1898).                                                                                                                                                                                                                                                                 | **Memory and safety-critical reasoning:** The model correctly rejected a known allergen but filled a separate evidence gap with invented product facts. Gonzalez et al.’s (2026) knowledge infrastructure principle calls for provenance and uncertainty to remain visible when information is unavailable.                                    | Require a catalog match and adequate ingredient/allergen evidence for substitutions. Escalate uncertain products to the user without presenting them as allergy-safe.                                                                                                                         |
-| **Microsoft 365 Copilot (GPT-5 chat), Prompt 3 (typical plan-to-cart translation):&#x20;**&#x43;opilot retained all 19 approved ingredients and used catalog products, but its itemized prices totaled $196.81, while it reported $197.79 and an incorrect overage. It also treated some package quantities as sufficient without enough yield information to verify them. See the[ evaluated receipt](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/Copilot_outputs.md) and[ raw subtotal](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/raw-outputs/Copilot_raw_outputs.md#L794).                                                                                                                   | **Reasoning:** Product matching and arithmetic are separate tasks; success at one did not ensure success at the other. Gonzalez et al. (2026) describe AI as a potential consistency checker, which makes independently calculated totals a better allocation of this repeatable task than trusting generated text.                            | Calculate cart totals from item quantities and observed prices in software. Flag package coverage as uncertain when a listing does not establish the usable quantity.                                                                                                                         |
-| **Gemini 3.6 Flash, Prompt 2 (typical lifestyle-aligned plan):&#x20;**&#x49;t included the requested pizza, but invented a $6.99 single-pizza package; the catalog listed four cheese pizzas for $13.99. All seven reported days were below the calorie target, Friday’s pizza exceeded the weekday time limit, and several meals exceeded the repetition cap. See the[ evaluated receipt](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/Gemini_outputs.md) and[ raw cart entry](https://github.com/srinathvenkatesh25/genai-capstone-project/blob/checkpoint-2/validation/transcripts/raw-outputs/Gemini_raw_outputs.md#L1161).                                                                                                                              | **Reasoning and attention:** The model attended to the favorite food but lost track of price, time, repetition, and daily targets. This reflects the framework’s concern with coordinating attention across competing goals; the user should judge whether a verified plan fits their lifestyle (Gonzalez et al., 2026).                       | Check product identity, package, and price against the available listing; validate daily targets, preparation time, and repetition after generation. Show unresolved conflicts before asking the user to approve the plan.                                                                    |
+**Human-alone limitation:** Users lack tools to explore options across multiple competing constraints simultaneously. They resort to mental heuristics, repeated trial-and-error, or abandon healthy eating goals altogether because the cognitive load is too high.
 
-## Design Principle and Checkpoint 3 Test
+**AI-alone limitation:** Large language models can generate plausible meal plans but cannot verify nutrition accuracy, may miss allergies, cannot judge adherence probability, and lack accountability for dietary decisions. Hallucinated nutrition values or unsafe substitutions create safety and trust failures.
 
-Our primary design principle is **role partitioning with explicit decision rights**. Gonzalez et al. (2026) argue that complementary teams assign work according to the strengths of each participant and preserve human authority at consequential decision points. In Prompt-to-Plate, AI proposes meals and product matches; structured checks verify measurable constraints and catalog support; the user decides whether the plan is practical, approves substitutions or constraint changes, and controls checkout. Failed checks must return the workflow to revision rather than being buried in an explanation.
+**Hybrid advantage:** AI rapidly explores the feasible option space within human-defined constraints; humans retain control over what matters most and verify that recommendations are safe and sustainable. Neither party could achieve realistic, constraint-satisfying outcomes alone.
 
-Checkpoint 3 will test this principle with the **same user profiles, catalog, and evaluation rubric** across three conditions: **human alone** planning meals and a cart, **AI alone** producing a plan and cart without the review workflow, and **human + Prompt-to-Plate** using generation, checks, and user review. We will compare constraint satisfaction, unsupported product claims, cart completeness and arithmetic, task time, user workload, and perceived plan practicality. We will claim complementarity only if the combined condition performs better than **both** baselines on the relevant outcomes, with no increase in critical safety failures. User interviews from Parts 4–5 can refine which outcomes users value most; they are not presented here as completed evidence.
+---
 
-## Reference
+## Complementarity Conditions
 
-Gonzalez, C., Donahue, K., Goldstein, D. G., Heidari, H., Jalali, M. S., Schelble, B., Singh, A., & Woolley, A. W. (2026). Toward a science of human–AI teaming for decision making: A complementarity framework. *PNAS Nexus, 5*(3), pgag030.[ https://doi.org/10.1093/pnasnexus/pgag030](< https://doi.org/10.1093/pnasnexus/pgag030>)
+For Prompt-to-Plate to demonstrate true complementarity, **all three of these must hold:**
+
+### 1. **Constraint Satisfaction**
+- AI generates meal plans that simultaneously satisfy: calorie targets ±5%, macro targets ±10%, budget limit, cooking time limit, allergy restrictions (hard constraint), cuisine preference, and ingredient reuse ≥60%.
+- **Test:** Do AI outputs violate any user-specified constraint? (If yes, AI is not trustworthy for real-world use.)
+
+### 2. **Adherence Feasibility**
+- Humans review AI-generated plans and report: "I would actually eat this" or "This is realistic for my lifestyle."
+- AI does not recommend meals that conflict with the user's stated preferences, cooking ability, or willingness to prepare novel foods.
+- **Test:** Do users approve the plans? Do speed-dating participants report the meals seem sustainable?
+
+### 3. **Verification & Safety**
+- Nutrition values (calories, macros, fiber, sodium, allergen warnings) are verified against trusted databases (USDA FoodData Central) before presentation to users.
+- Allergies are treated as hard constraints and flagged across all ingredients and packaged products.
+- Uncertainty is exposed rather than hidden (e.g., "Nutrition estimate based on USDA data" vs. no attribution).
+- **Test:** Do nutrition values match independent recalculation? Are allergen misses detected?
+
+---
+
+## Cognitive Pillars & Role Assignment
+
+Mapped to Gonzalez et al.'s framework:
+
+| **Cognitive Pillar** | **AI's Role** | **Human's Role** | **Why This Pairing Works** |
+|---|---|---|---|
+| **Reasoning** | Generate feasible options; flag constraint violations; check nutritional accuracy; surface trade-offs (e.g., "Can't meet all constraints—pick priority") | Define values & constraints; approve or reject options; judge feasibility ("I can realistically cook this"); sign off on dietary decisions | AI explores the decision space *within* human boundaries; humans hold ethical authority and make final judgments. |
+| **Attention** | Triage recipes by constraint priority; flag anomalies (ingredient unavailable, allergy detected, budget overrun); surface critical information (allergens, nutrition uncertainty) | Redirect if AI prioritized wrong; decide what matters most this week ("Make it cheaper, not healthier"); notice if important information is missing | AI handles routine vigilance & prioritization; humans decide *what deserves attention* based on context. |
+| **Memory** | Store recipes, nutrition data, user profiles, and pantry inventory; learn which meals users skip, replace, or complete; track adherence patterns | Validate data accuracy ("That's not my allergy profile"); provide context ("I hated that meal"); decide if strategy should change | AI learns from user behavior over time; humans confirm whether the learning is correct and actionable. |
+| **Meta-Coordination** | Execute structured plan-generation, validation, and optimization logic; maintain audit trails for safety and compliance | Design the overall team workflow (when AI proposes vs. when human decides); manage escalation (unclear constraint → ask user for clarification); define approval gates | AI ensures procedural reliability and traceability; humans manage flexibility and handle exceptions. |
+
+---
+
+## Design Principles That Enable Complementarity
+
+### For Reasoning
+- **Goals & Constraints:** Require users to specify calorie/macro targets, allergies, budget, cooking time, and cuisine preference upfront. AI must validate that constraints are satisfiable; if not, ask humans to re-prioritize.
+- **Knowledge Infrastructure:** Nutrition data must be sourced from USDA FoodData Central or equivalent. Recipes must include preparation time, ingredient counts, and verified macros. Provenance must be transparent.
+- **Error Detection:** Implement deterministic checks for budget overage, allergy presence, prep-time violations, and calorie/macro mismatches. Flag uncertainty when data is estimated.
+
+### For Attention
+- **Attention & Interrogation Orchestration:** AI proposes 3–5 meal plans; human selects one, requests changes ("Make it easier"), or rejects all and re-prioritizes constraints. Never auto-finalize plans.
+- **Escalation Protocols:** If constraints are contradictory (high-protein, low-budget, no-cook), AI flags the conflict and asks human to adjust.
+- **Monitoring:** Track which meals users actually prepare vs. skip; flag systematic failures (e.g., "You've skipped 4 chicken dishes—shall we remove chicken?").
+
+### For Memory
+- **Transactive Memory:** System maintains "who knows what" (which recipes suit this user, which products are in their pantry, which meal swaps they prefer). Users can correct the system.
+- **Continuous Learning:** After each week, update preference profile and meal recommendations based on adherence, user feedback, and substitutions made.
+- **Auditability:** Store decision records so users and designers can trace why a meal was recommended or why a product was selected.
+
+### For Meta-Coordination
+- **Role Partitioning:** AI controls meal-generation logic and optimization; human controls approval gates and final purchasing authority.
+- **Training & Evaluation:** Measure not just plan accuracy but user satisfaction, adherence likelihood, and safety (allergens caught, budget respected).
+
+---
+
+## What We're Testing (Checkpoints 2–3)
+
+### Prompting Study (Checkpoint 2)
+- **Typical scenarios:** Can AI generate constraint-satisfying plans? Do plans match verified nutrition data?
+- **Edge scenarios:** What happens when constraints conflict? Does AI flag impossibilities?
+- **Failure scenarios:** Can AI miss an allergy? Exceed a budget? Ignore a cooking-time limit? (These test whether the AI is trustworthy for real deployment.)
+
+### Speed-Dating Interviews
+- **Accuracy & hallucinations:** Do users trust the nutrition information?
+- **Reliability & consistency:** Would users expect similar plans from identical inputs?
+- **UX friction:** Which constraints are burdensome to enter? When should humans review/override AI?
+- **Safety & guardrails:** Are users concerned about allergies, nutrition, or substitutions?
+- **Adherence feasibility:** Would users actually prepare the recommended meals?
+
+### Hypothesis
+**If complementarity conditions hold, then:**
+- AI-generated plans satisfy ≥95% of constraints.
+- Users report ≥80% of recommended meals are realistic/sustainable.
+- Nutrition values match independent verification ≥95%.
+- Allergens are correctly identified 100% of the time.
+- Users approve plans without modification ≥70% of the time (indicating good AI understanding of preferences).
+- Users report time savings and reduced cognitive burden compared to manual meal planning.
+
+**If complementarity breaks down, then:**
+- Plans violate constraints (budget overage, allergy present, prep time infeasible).
+- Nutrition values are hallucinated or incorrect.
+- Users report low adherence ("I would never eat this").
+- Allergens are missed.
+- Users distrust the system and manually verify everything (negating AI benefit).
+
+---
+
+## Theoretical Grounding
+
+This claim is grounded in Gonzalez et al.'s (2026) framework:
+
+1. **Complementarity:** Our hybrid outperforms human-alone and AI-alone because each party's strengths offset the other's weaknesses. Humans provide contextual judgment and accountability; AI provides rapid optimization and verification.
+
+2. **Cognitive Foundations:** Reasoning (multi-objective problem-solving), Attention (prioritization & monitoring), and Memory (learning from user behavior) are the pillars. Meal planning is fundamentally a reasoning task; attention ensures priorities are respected; memory enables improvement over time.
+
+3. **Sociotechnical Factors:** Trust calibration (users must see why AI chose a plan), shared mental models (users must understand what AI can and cannot do), and role clarity (who decides what) are critical for success.
+
+4. **Design Principles:** Our platform implements goal definition (users specify constraints), knowledge infrastructure (verified nutrition data), attention orchestration (AI proposes, human decides), role partitioning (AI optimizes, human approves), and training/evaluation (iterative improvement).
+
+---
+
+## Team Reflections
+
+**What each team member brought to this claim:**
+
+- **Srinath Venkatesh** (shopping & AI-agent purchasing): Emphasized that AI shopping agents fail when unsupervised. Highlighted the need for human approval before checkout and verification of product selection.
+
+- **Chantrice Santiago** (multi-agent LLM systems): Stressed that multi-agent workflows only succeed if roles are clear and escalation protocols are explicit. Identified reasoning failures when constraints conflict.
+
+- **Kanishka Gupta** (nutrition & ingredient substitution): Anchored the claim in nutrition science. Emphasized that adherence is the limiting factor—a perfect plan users won't follow is useless.
+
+- **Sneha Vyas** (generative meal planning): Highlighted that users need 3–5 options, not 1 recommendation. Stressed the importance of learning from weekly adherence patterns.
+
+---
+
+## Slide 2 Talking Points (60 seconds)
+
+**Title:** "Human-AI Complementarity in Prompt-to-Plate"
+
+**Narrative:**
+> Meal planning is a multi-constraint optimization problem. Users must balance nutrition goals, budget, cooking time, allergies, cuisine preferences, and sustainability all at once. That's too much for either humans or AI to solve alone.
+>
+> Humans excel at judgment—"Will I actually eat this?" and "Does this fit my life?"—but struggle with simultaneous constraint optimization.
+>
+> AI excels at rapid exploration and verification—generating options and catching allergy violations—but cannot judge adherence or hold ethical responsibility.
+>
+> Our hybrid team works because AI explores options *within* human-defined boundaries, and humans retain control over what matters most. Neither party could achieve realistic, sustainable outcomes alone.
+
+**Key Visual:** Three columns:
+1. **Human-Alone:** "Slow, inconsistent, high cognitive load"
+2. **AI-Alone:** "Fast, but unsafe; may miss allergies; users don't trust it"
+3. **Hybrid (Prompt-to-Plate):** "Fast + safe + sustainable + trusted; humans in control"
+
+---
+
+## References
+
+Gonzalez, C., Donahue, K., Goldstein, D. G., Heidari, H., Jalali, M. S., Schelble, B., Singh, A., & Woolley, A. W. (2026). Toward a science of human–AI teaming for decision making: A complementarity framework. *PNAS Nexus*, *5*(3), pgag030. https://doi.org/10.1093/pnasnexus/pgag030
