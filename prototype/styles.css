@@ -1566,3 +1566,13 @@ input[type="checkbox"] {
     min-width: 48px;
   }
 }
+
+/* Says plainly that the prototype plays one fixed sample week. */
+.sample-banner {
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border-left: 4px solid var(--turmeric);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--turmeric-wash);
+  font-size: 0.875rem;
+}

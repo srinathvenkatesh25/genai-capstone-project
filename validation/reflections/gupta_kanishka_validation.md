@@ -33,7 +33,7 @@ whether a plan is actually feasible.
 
 ### Notes from Speed Dating
 
-#### Interview 1
+#### Interview 1 (ID 5 in the [interview index](../INTERVIEW_INDEX.md))
 
 I spoke with a graduate student who meal-preps on weekends. Their
 constraint was tight: they needed meals under 30 minutes, high protein,
@@ -48,7 +48,7 @@ evidence that trade-offs had been made explicitly.
 They did not want the system to silently downgrade quality; they wanted
 to see what was being compromised and decide whether to accept it.
 
-#### Interview 2
+#### Interview 2 (ID 6 in the [interview index](../INTERVIEW_INDEX.md))
 
 I also interviewed an undergraduate who uses the system for weeknight
 dinners. They have less cooking experience and rely on familiar

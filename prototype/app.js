@@ -36,7 +36,7 @@ const PERSONAS = {
       ["planned", "Generate a quick, realistic weekly plan: press Plan my week"],
       ["time", "Find fast-prep meals: open a meal and read its time check"],
       ["swap", "Adjust conversationally: Swap Monday dinner and say why"],
-      ["approved", "Approve with one decision: Fill my cart"],
+      ["approved", "Approve with one decision: Simulate filling cart"],
     ],
     success: "Less time planning, meals that fit the schedule, fewer decisions.",
   },
@@ -47,7 +47,7 @@ const PERSONAS = {
     tasks: [
       ["planned", "Set a weekly budget, then Plan my week"],
       ["untick", "Avoid unnecessary purchases: untick something you have"],
-      ["approved", "Check the estimate against the budget, then Fill my cart"],
+      ["approved", "Check the estimate against the budget, then Simulate filling cart"],
       ["product", "Audit the cart: open Why this product? and the left-over column"],
     ],
     success: "Cart within budget, nothing unnecessary, less food wasted.",
@@ -263,7 +263,7 @@ function formHtml() {
     <label class="chip"><input type="checkbox" data-chip="${name}" value="${o}" ${chosen.includes(o) ? "checked" : ""}>${nice(o)}</label>`).join("");
   const words = `
     <label class="field field-wide"><span>Describe your week</span>
-      <textarea rows="5" data-f="words" placeholder="1,850 calories and 80 g protein a day, Mexican food with chicken, halal, nothing over 30 minutes, ZIP 12345, $80 budget">${esc(f.words)}</textarea>
+      <textarea rows="5" data-f="words" placeholder="1,850 calories and 80 g protein a day, Mexican food with chicken, nothing over 30 minutes, ZIP 12345, $80 budget">${esc(f.words)}</textarea>
       <small>One AI call turns this into the same preferences as the form. Include your ZIP.</small>
     </label>`;
   const form = `
@@ -331,8 +331,8 @@ function mealHtml(day, meal, nut, mi) {
   const rows = new Map((nut ? nut.ingredients : []).map((r) => [r.name, r]));
   const { floor, because } = timeFloor(meal);
   const timeNote = floor
-    ? `Time checked: ${nice(because)} needs at least ${floor} min${RUN.spec.equipment.includes("pressure_cooker") && because.includes("brown_rice") ? " in a pressure cooker" : ""}, so ${meal.prep_minutes} min is realistic and fits your ${S.form.minutes}-minute limit.`
-    : `Time checked: nothing slow-cooking here; ${meal.prep_minutes} min fits your ${S.form.minutes}-minute limit.`;
+    ? `AI-estimated: ${meal.prep_minutes} min. Checked against a heuristic minimum: ${nice(because)} needs at least ${floor} min${RUN.spec.equipment.includes("pressure_cooker") && because.includes("brown_rice") ? " in a pressure cooker" : ""}, so it wasn't raised. Fits your ${S.form.minutes}-minute limit.`
+    : `AI-estimated: ${meal.prep_minutes} min. Nothing slow-cooking, so no heuristic minimum applies. Fits your ${S.form.minutes}-minute limit.`;
   const canSwap = S.stage === "review";
   const ingredients = meal.ingredients.map((i) => {
     const r = rows.get(i.name);
@@ -391,7 +391,7 @@ function labelHtml(day) {
 }
 
 function checksHtml() {
-  const gates = ["Calories within ±5% every day", "Protein within ±10 g", "No mushrooms or mayonnaise", "Halal",
+  const gates = ["Calories within ±5% every day", "Protein within ±10 g", "No mushrooms or mayonnaise",
     "Every meal ≤ 30 min", "Only your equipment", "Steps for every meal", "Variety across the week"];
   return `<section class="panel checks" aria-labelledby="checks-h">
     <h3 id="checks-h">How this plan was checked</h3>
@@ -517,12 +517,13 @@ function cartHtml() {
   return `
     <section class="hero hero-run"><h1>Your cart is ready</h1>
       <p>At ${esc(c.store)} · ${usd(c.subtotal_usd)}${b ? ` · ${c.subtotal_usd <= b ? `within your ${usd(b)} budget` : `<span class="over">${usd(c.subtotal_usd - b)} over budget</span>`}` : ""}</p>
-      <p style="margin-top:10px"><span class="stamp">✓ Verified against your cart</span></p></section>
+      <p style="margin-top:10px"><span class="stamp">✓ Verified (simulated with sample data)</span></p>
+      <p class="fine" style="margin-top:8px">A cart is "ready" only when every item is covered in at least the needed quantity: ${c.coverage.filter((x) => x.covered).length} of ${c.coverage.length} here.</p></section>
     ${S.zipMismatch ? `<div class="callout">Instacart is set to deliver to ${RUN.spec.zip_code}, not your ZIP ${esc(S.form.zip)}. These stores and prices are for ${RUN.spec.zip_code}.</div>` : ""}
     ${changes ? `<p class="notice fixed-note">In this prototype the cart is fixed, so changes you made to the plan aren't reflected here.</p>` : ""}
     <section aria-labelledby="cart-h">
       <div class="section-head"><h2 id="cart-h">Every item, checked</h2>
-        <p>Prompt-to-Plate read the cart back from Instacart and compared it with your list. "Left over" is what the week won't use.</p></div>
+        <p>In the product, the cart is read back from Instacart and compared with your list; here it's the sample cart. "Left over" is what the week won't use.</p></div>
       <table class="receipt">
         <thead><tr><th>For</th><th>In your cart</th><th class="num">Need / have</th><th class="num">Left over</th><th class="num">Price</th></tr></thead>
         <tbody>${lines}</tbody>
@@ -541,7 +542,7 @@ function usageModels() {
 
 function handoffHtml() {
   return `<div class="checkout"><p><b>You check out yourself.</b> Prompt-to-Plate never opens checkout or touches payment; it stops here.</p>
-    <button type="button" class="btn btn-primary" data-handoff data-k="handoff">Open Instacart</button>
+    <button type="button" class="btn btn-primary" data-handoff data-k="handoff">Simulate Instacart hand-off</button>
     <button type="button" class="btn btn-quiet" data-restart>Start a new plan</button></div>`;
 }
 
@@ -565,8 +566,8 @@ function questionHtml() {
     title = "Approve the grocery list";
     body = `<p>${n} item${n === 1 ? "" : "s"}${S.unticked.size ? ` (${S.unticked.size} unticked)` : ""} · est. <span class="mono">${usd(est)}</span>
         <span class="badge">from your last cart's prices</span>${b ? ` · ${est <= b ? `within your ${usd(b)} budget` : `<span class="over">${usd(est - b)} over budget</span>`}` : ""}</p>
-      <p class="fine">Nothing touches Instacart until you approve. This pause is saved, so it still works after a restart.</p>
-      <div class="row"><button type="button" class="btn btn-primary" data-approve data-k="approve">Fill my cart</button>
+      <p class="fine">Your budget is a preference, so an overage is shown, not blocked. Nothing touches Instacart until you approve. This pause is saved, so it still works after a restart.</p>
+      <div class="row"><button type="button" class="btn btn-primary" data-approve data-k="approve">Simulate filling cart</button>
         <button type="button" class="btn btn-quiet" data-cancel>Cancel this plan</button></div>`;
   } else if (q.kind === "email_code") {
     title = `Enter your Instacart code`;
@@ -748,7 +749,7 @@ document.addEventListener("click", (e) => {
   if ("approve" in d) { startShopping(); render(); return; }
   if ("cancel" in d) { reset(); render(); toast("Plan cancelled. Nothing was bought."); return; }
   if (d.answerBtn) { continueShopping(d.answerBtn); render(); return; }
-  if ("handoff" in d) { meet("cart"); toast("This opens Instacart in your browser. You review each store's cart and check out there."); return; }
+  if ("handoff" in d) { meet("cart"); toast("Simulated. In the product, this opens Instacart in your browser. You review each store's cart and check out there."); return; }
   if ("restart" in d) { jump("J1"); return; }
   if (t.id === "theme") {
     const dark = !currentlyDark();

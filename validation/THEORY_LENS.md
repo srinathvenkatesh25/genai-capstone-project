@@ -28,7 +28,7 @@ Prompt-to-Plate solves a multi-objective optimization problem under uncertainty:
 For Prompt-to-Plate to demonstrate true complementarity, **all three of these must hold:**
 
 ### 1. **Constraint Satisfaction**
-- AI generates meal plans that simultaneously satisfy: calorie targets ±5%, macro targets ±10%, budget limit, cooking time limit, allergy restrictions (hard constraint), cuisine preference, and ingredient reuse ≥60%.
+- AI generates meal plans that simultaneously satisfy: calorie targets ±5% and protein within ±10 g (carbohydrates and fat are reported but not gated), budget limit (when locked), cooking time limit, allergy restrictions (hard constraint), cuisine preference, and ingredient reuse ≥60%.
 - **Test:** Do AI outputs violate any user-specified constraint? (If yes, AI is not trustworthy for real-world use.)
 
 ### 2. **Adherence Feasibility**
@@ -37,7 +37,7 @@ For Prompt-to-Plate to demonstrate true complementarity, **all three of these mu
 - **Test:** Do users approve the plans? Do speed-dating participants report the meals seem sustainable?
 
 ### 3. **Verification & Safety**
-- Nutrition values (calories, macros, fiber, sodium, allergen warnings) are verified against trusted databases (USDA FoodData Central) before presentation to users.
+- Nutrition values (calories, protein, carbohydrates, fat) are computed from trusted data (USDA FoodData Central) before presentation to users; calories and protein are the gated targets. Fiber and sodium are not yet tracked and are future work.
 - Allergies are treated as hard constraints and flagged across all ingredients and packaged products.
 - Uncertainty is exposed rather than hidden (e.g., "Nutrition estimate based on USDA data" vs. no attribution).
 - **Test:** Do nutrition values match independent recalculation? Are allergen misses detected?
@@ -60,12 +60,12 @@ Mapped to Gonzalez et al.'s framework:
 ## Design Principles That Enable Complementarity
 
 ### For Reasoning
-- **Goals & Constraints:** Require users to specify calorie/macro targets, allergies, budget, cooking time, and cuisine preference upfront. AI must validate that constraints are satisfiable; if not, ask humans to re-prioritize.
-- **Knowledge Infrastructure:** Nutrition data must be sourced from USDA FoodData Central or equivalent. Recipes must include preparation time, ingredient counts, and verified macros. Provenance must be transparent.
-- **Error Detection:** Implement deterministic checks for budget overage, allergy presence, prep-time violations, and calorie/macro mismatches. Flag uncertainty when data is estimated.
+- **Goals & Constraints:** Require users to specify calorie and protein targets, allergies, budget, cooking time, and cuisine preference upfront. AI must validate that constraints are satisfiable; if not, ask humans to re-prioritize.
+- **Knowledge Infrastructure:** Nutrition data must be sourced from USDA FoodData Central or equivalent. Recipes must include labelled preparation time (AI-estimated, heuristic minimum applied, or source-verified), ingredient counts, and macros computed from USDA data. Provenance must be transparent.
+- **Error Detection:** Implement deterministic checks for budget overage, allergy presence, prep-time violations, and calorie/protein mismatches. Flag uncertainty when data is estimated.
 
 ### For Attention
-- **Attention & Interrogation Orchestration:** AI proposes 3–5 meal plans; human selects one, requests changes ("Make it easier"), or rejects all and re-prioritizes constraints. Never auto-finalize plans.
+- **Attention & Interrogation Orchestration:** AI proposes one complete weekly plan; the human swaps individual meals ("Make it easier", "replace Wednesday dinner"), approves it, or cancels and re-prioritizes constraints. Never auto-finalize plans: nothing is shopped before explicit approval.
 - **Escalation Protocols:** If constraints are contradictory (high-protein, low-budget, no-cook), AI flags the conflict and asks human to adjust.
 - **Monitoring:** Track which meals users actually prepare vs. skip; flag systematic failures (e.g., "You've skipped 4 chicken dishes—shall we remove chicken?").
 
@@ -111,6 +111,13 @@ Mapped to Gonzalez et al.'s framework:
 - Users distrust the system and manually verify everything (negating AI benefit).
 
 ---
+
+## Revisions After Validation
+
+Checkpoint 2 evidence changed two parts of the original claim:
+
+- **One plan plus targeted swaps, instead of 3–5 alternative plans.** The original design (Sneha's contribution below) had the AI propose 3–5 weekly plans for the user to choose from. Interviews 1, 3 and 4 asked to change a single meal rather than compare or regenerate whole weeks, so comparing several complete weeks would add cognitive load. Choice now happens at the meal level.
+- **Calories and protein are the gated nutrition targets.** The original condition gated all macros within ±10% and verified fiber and sodium. The design gates calories (±5%) and protein (±10 g), reports carbohydrates and fat without gating them, and leaves fiber and sodium for future work. Two targets can be met reliably by deterministic portion sizing, and they are the numbers participants focused on.
 
 ## Theoretical Grounding
 
