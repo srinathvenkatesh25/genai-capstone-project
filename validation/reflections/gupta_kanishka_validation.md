@@ -77,7 +77,11 @@ burden through AI-assisted generation and human review, to cart
 verification and final human control over checkout. It shows the
 decision gates and the moments where human judgment is essential.
 
-## ![](media/image1.png){width="6.0in" height="3.372916666666667in"}One Finding That Changed (or Confirmed) My Assumption About the Proposed Scenario
+<img width="1672" height="941" alt="image" src="https://github.com/user-attachments/assets/a2ac3bf0-703e-40a7-b6e8-73b36309acd4" />
+
+
+
+## One Finding That Changed (or Confirmed) My Assumption About the Proposed Scenario
 
 The finding that most changed my assumption was how central
 deterministic validation is to trust. When we built the gap analysis, I
