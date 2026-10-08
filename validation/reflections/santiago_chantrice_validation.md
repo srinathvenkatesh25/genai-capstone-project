@@ -12,7 +12,7 @@
 
 ### Notes from Speed Dating
 
-#### Interview 1
+#### Interview 1 (ID 3 in the [interview index](../INTERVIEW_INDEX.md))
 
 - I interviewed a busy UIUC MSTM graduate student who often eats on campus and uses grocery delivery occasionally. Their main problem was decision fatigue rather than a lack of nutrition knowledge.
 - They ranked time first, followed by reasonable health and affordability. They were not looking for a “perfect” nutrition plan.
@@ -22,7 +22,7 @@
 - They were willing to let the application create the meal plan, but wanted to approve the grocery cart before anything was ordered.
 - They would wait about 20–30 seconds for a complete weekly plan and grocery list. To lower cost, they preferred fewer ingredients and repeated meals.
 
-#### Interview 2
+#### Interview 2 (ID 4 in the [interview index](../INTERVIEW_INDEX.md))
 
 - I also interviewed a UIUC undergraduate with limited cooking experience. They currently save recipes from TikTok and Instagram but rarely turn those ideas into actual meals.
 - For this participant, “easy” meant inexpensive, quick, and made with only a few ingredients. A recipe with 15 ingredients did not feel easy even if its steps were simple.
@@ -33,7 +33,7 @@
 
 #### Cross-Interview Takeaway
 
-- Looking across all eight interviews, every participant wanted the AI to draft the cart and every participant wanted checkout to remain a human decision. Most also preferred targeted edits, visible trade-offs, ingredient reuse, and honest uncertainty over silent substitutions or full-plan regeneration.
+- Across the interviews in our reflection notes, every participant wanted the AI to draft the cart and wanted checkout to remain a human decision. Most also preferred targeted edits, visible trade-offs, ingredient reuse, and honest uncertainty over silent substitutions or full-plan regeneration.
 
 ## Class-Generated Storyboard
 

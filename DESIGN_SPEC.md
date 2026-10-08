@@ -1,8 +1,8 @@
 # Prompt-to-Plate: Design Specification
 
 Prompt-to-Plate plans a week of meals to a calorie and protein target, checks every day against USDA
-nutrition data, and fills the user's Instacart cart. It **stops at a filled, verified cart: the
-person always checks out themselves.** This document specifies the Prompt-to-Plate experience for three
+nutrition data, and fills the user's Instacart cart. It **stops at a filled cart, checked
+against the list (see 0.3): the person always checks out themselves.** This document specifies the Prompt-to-Plate experience for three
 personas.
 
 - **Interactive prototype:** [srinathvenkatesh25.github.io/genai-capstone-project/prototype/](https://srinathvenkatesh25.github.io/genai-capstone-project/prototype/)
@@ -10,6 +10,72 @@ personas.
 
 Numbers in the examples come from a sample week: 7 days of Mexican meals at 1,850 kcal and 80 g
 protein a day, an $80 budget, and a 14-item Kroger cart of $54.50.
+
+---
+
+## 0. Context: validation, scope and contracts
+
+### 0.1 Design pivot after validation
+
+The Checkpoint 2 validation ([PROMPTING_PROTOCOL.md](validation/PROMPTING_PROTOCOL.md)) used a
+deliberately controlled setup: three general-purpose models, a synthetic Costco inventory
+([Synthetic_Costco_Inventory.xlsx](validation/Synthetic_Costco_Inventory.xlsx)), and a user with no
+pantry. That isolated what language models do on their own. This specification is the target product
+designed in response, and it changes three parts of that setup:
+
+| Validation setup | Target design | Why it changed |
+|---|---|---|
+| Synthetic Costco inventory | Instacart, with the store chosen for the week's list (Kroger in the sample week) | A real store means real search results and a real cart. Given only a catalog, models invented products, pack sizes and prices (Gemini P1, P5). |
+| Nutrition reported by the model | USDA FoodData Central, computed by code | The study found nutrition misses and arithmetic errors (Copilot P2, P3, P5; Gemini P1–P3). |
+| No pantry | A pantry list entered before planning; those items are never bought | Interview 1 ("If I already have rice and onions, I don't want the app telling me to buy more"). Gemini P4 assumed staples the user didn't have; an explicit list removes guessing in both directions. |
+
+How each validation finding maps to the design:
+
+| Finding | Design response |
+|---|---|
+| Invented products, packs and prices (Gemini P1, P5) | Products come only from store search results; prices come from the cart; estimates are labelled as estimates |
+| Arithmetic and nutrition errors (Copilot P3, P5; Gemini P3) | Portions, totals, pack counts and prices are computed by code, never by the model |
+| A conflict flagged and then treated as resolved (Claude P4) | Hard gates: the plan cannot move on with an unresolved conflict; cooking times carry a label (0.3) |
+| Ingredients missing from the cart (Copilot P2, Gemini P5) | "Cart ready" requires 100% coverage (0.3) |
+| Unsupported allergen claims (Gemini P4) | Allergies and restrictions are hard constraints; product certifications are never claimed |
+| A bare estimate with no plan (Copilot P1) | The full plan, list and estimate are always shown before approval |
+| Models kept checkout with the user | Kept: the person checks out themselves |
+| Interviews 1, 3 and 4: change one meal, not the whole week | Targeted meal swaps (J2) |
+
+### 0.2 Target product vs prototype
+
+Sections 1–5 describe the **target product**. The [prototype](prototype/) demonstrates the full target
+experience across all phases, independent of the build order in
+[OPPORTUNITY_FRAMING.md](validation/OPPORTUNITY_FRAMING.md), by playing **one fixed sample week**.
+
+| Capability | Target product | Prototype |
+|---|---|---|
+| Plan from targets and rules | AI plans the week; code sizes portions and checks them | **Simulated:** the same sample week whatever the form says; ZIP validation is implemented |
+| Describe the week in words | Parsed into the same preferences | **Simulated** (same sample week) |
+| Per-meal and per-ingredient nutrition, Why? (USDA) | Computed from USDA data | **Implemented** on the sample data (real USDA values) |
+| Swap a meal | One AI call; only that day re-sized and re-checked | **Simulated:** Monday dinner only, pre-computed |
+| Weekly gradual change | Suggested once a week | **Simulated:** one pre-computed suggestion |
+| Untick items; estimate vs budget | Live | **Implemented** |
+| Approval gate | Nothing is shopped before approval | **Implemented** |
+| Fill the cart (store ranking, pauses, up to 3 stores) | Real browser session on Instacart | **Simulated:** scripted progress and pauses; nothing contacts Instacart |
+| Cart check (read-back, coverage) | Cart read back from Instacart and compared with the list | **Simulated** with sample data; the coverage arithmetic is real |
+| Hand-off to Instacart | Opens Instacart for checkout | **Simulated** (message only) |
+| Failure flows | Live | **Simulated** |
+| Locked preferences, cart-edit impact, adherence tracking | Planned | **Planned** |
+| Checkout and payment | Never automated | **Out of scope** |
+
+### 0.3 Validation contract
+
+One set of rules, used by this specification, the prototype and the validation documents:
+
+| Rule | Contract |
+|---|---|
+| Nutrition targets | Calories within ±5% and protein within ±10 g per day are gated. Carbohydrates and fat are reported, not gated. Fiber and sodium are future work. |
+| Cart coverage | **"Cart ready" only at 100%:** every list item in at least the needed quantity. Anything less is "needs a look". ≥95% is only a research benchmark for model performance. |
+| Budget | **No budget:** unconstrained (cost still shown). **Preference (default):** an overage is allowed but always disclosed before approval. **Locked:** approval is blocked until the overage is resolved. |
+| Allergies and restrictions | Hard constraints, checked at ingredient level. Product certifications (e.g. halal, allergen cross-contact) are never claimed; they need a label review. |
+| Cooking time | Every time is labelled **AI-estimated**, **heuristic minimum applied** (raised to a realistic floor for slow foods, e.g. raw rice or chicken ≥ 15 min, dried beans ≥ 50 min), or **source-verified** (matched to cited recipe sources; future work). A heuristic-adjusted time is never called verified. |
+| "Verified" | Means exactly two things: the cart was read back from the store and every list item is present in at least the needed quantity; and nutrition was computed by code from USDA data. It does **not** mean exact product nutrition (USDA entries are generic), exact weights for loose produce (estimated), final prices (before fees and tax), availability at checkout, or certifications. |
 
 ---
 
@@ -30,7 +96,7 @@ For each we add the mental model the design must respect and how Prompt-to-Plate
 | Task | How Prompt-to-Plate supports it |
 |---|---|
 | Quick, realistic weekly plan | A full week planned in one step, with portions sized to hit the targets |
-| Fast-prep meals | A max-minutes-per-meal limit; realistic cooking-time minimums (raw rice and chicken ≥ 15 min, dried beans ≥ 50) correct optimistic times, and the meal says why its time was checked |
+| Fast-prep meals | A max-minutes-per-meal limit; realistic cooking-time minimums (raw rice and chicken ≥ 15 min, dried beans ≥ 50) correct optimistic times, and each meal's time is labelled AI-estimated or heuristic minimum applied (0.3) |
 | Adjust conversationally | "Describe in words" input; **Swap a meal** with a plain-language reason |
 
 ### 1.2 The Budget-Savvy Shopper
@@ -46,7 +112,7 @@ For each we add the mental model the design must respect and how Prompt-to-Plate
 |---|---|
 | Set a weekly budget | Budget field; estimate vs budget on the approval card (from earlier cart prices); subtotal vs budget on the cart review |
 | Optimize ingredients across meals | Meals reuse ingredients; the week is consolidated into one list (103 ingredient lines → 25 items in a typical week) |
-| Approve an affordable, **low-waste** cart | Pantry items never bought; untick items you have; cart verified line by line; a **leftover cue** shows how much of each pack the week won't use (the sample week needs **40 g of peanut butter but buys a 454 g jar**, and 25 g of spinach becomes a 170 g bag) |
+| Approve an affordable, **low-waste** cart | Pantry items never bought; untick items you have; cart checked line by line for coverage; a **leftover cue** shows how much of each pack the week won't use (the sample week needs **40 g of peanut butter but buys a 454 g jar**, and 25 g of spinach becomes a 170 g bag) |
 
 ### 1.3 The On-and-Off Dieter
 
@@ -238,7 +304,7 @@ Low-fidelity layouts; the prototype shows them at full fidelity.
 │ │ Calories  1850  │ Protein 80 │   ← nutrition-label style input          │
 │ └──────────────────────────────┘                                          │
 │ The week:   Days [7]  ZIP [_____]*  Budget [$80]  Cuisines [Mexican]       │
-│ Never use:  Dislikes [...]  Allergies [...]  (vegetarian)(halal ✓)...      │
+│ Never use:  Dislikes [...]  Allergies [...]  (vegetarian)(vegan)...         │
 │ Kitchen:    Max min [30]  Effort [▾]  Skill [▾]  (stove ✓)(oven ✓)...      │
 │ Pantry:     [salt, rice, oil]                                             │
 │ [ Plan my week ]                                                          │
@@ -305,7 +371,7 @@ Low-fidelity layouts; the prototype shows them at full fidelity.
 |---|---|
 | Calories and protein | Large numeric fields styled as the top of a nutrition label; the only gated targets |
 | ZIP code | Empty, required, 5 digits only (letters stripped as typed); server rejects anything else |
-| Budget, days, max minutes | Numeric with units; budget optional |
+| Budget, days, max minutes | Numeric with units; budget optional, a preference by default and lockable (0.3) |
 | Dislikes, allergies, cuisines, pantry | Comma-separated text, split into lists on submit |
 | Restrictions, equipment | Filter chips |
 | Effort, skill | Selects |

@@ -14,9 +14,7 @@
   "zip_code": "12345",
   "include_snacks": false,
   "allergies": [],
-  "dietary_restrictions": [
-   "halal"
-  ],
+  "dietary_restrictions": [],
   "dislikes": [
    "mushrooms",
    "mayonnaise"
