@@ -35,7 +35,7 @@ offline USDA table, so they never call live services. The live parts are walked 
 ## Running the tests
 
 ```bash
-pip install -r app/requirements.txt
+pip install -r app/requirements.txt && playwright install chromium   # once, for the browser tests
 pytest -q --ignore=tests/test_session.py     # about 20 s; no network, no Chrome
 pytest -q                                    # also the real-Chrome tests, about 75 s
 ```

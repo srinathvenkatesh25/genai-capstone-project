@@ -23,6 +23,7 @@ python3.11 -m venv .venv
 source .venv/bin/activate
 pip install -U pip
 pip install -r requirements.txt
+playwright install chromium      # only the tests use this; the app itself drives your installed Chrome
 cp .env.example .env              # first time only; never overwrite an existing .env
 (cd frontend && npm ci)
 ```
@@ -62,10 +63,10 @@ Open http://localhost:3000. After changing backend code, restart terminal 1 (whe
 
 ## Tests
 
-From the repository root (they use a fake AI, fake store and offline USDA table; no keys or network needed):
+From the repository root (they use a fake AI, fake store and offline USDA table; no keys needed. The Chrome tests need `playwright install chromium` once):
 
 ```bash
-pip install -r app/requirements.txt
+pip install -r app/requirements.txt && playwright install chromium   # once
 pytest -q --ignore=tests/test_session.py   # about 20 s
 pytest -q                                  # adds real headless-Chrome tests, about 75 s
 ```
