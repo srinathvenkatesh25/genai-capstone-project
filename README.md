@@ -191,7 +191,7 @@ every plan against USDA data in code, and fills real Instacart carts. It never c
 repaired → grocery list → **user approves** → Instacart carts filled across stores → **user reviews and
 checks out**. Generative AI proposes meals and picks products; code does all arithmetic and every pass/fail check.
 
-**Run it:** [app/INSTALL.md](app/INSTALL.md). **Test it:** `pip install -r app/requirements.txt && pytest -q --ignore=tests/test_session.py`.
+**Run it:** [app/INSTALL.md](app/INSTALL.md). **Test it:** `pip install -r app/requirements.txt && playwright install chromium && pytest -q --ignore=tests/test_session.py`.
 
 ## Checkpoint 3 Deliverables
 
