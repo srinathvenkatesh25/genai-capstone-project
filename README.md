@@ -181,6 +181,33 @@ Safety refusals were often strong, but uncertainty handling varied: some outputs
 | `prototype/` | Interactive clickthrough or sandbox prototype |
 | `validation/reflections/` | Individual validation reflections and required storyboard material |
 
+# Checkpoint 3 — Working Implementation & Live Demo
+
+Checkpoint 3 replaces the clickthrough prototype with a **running, end-to-end application** (MealCart, the
+implementation of Prompt-to-Plate). It makes real model calls, keeps state across human decisions, checks
+every plan against USDA data in code, and fills real Instacart carts. It never checks out.
+
+**Flow:** request → AI plans the week → software sizes portions and validates every day → failing days are
+repaired → grocery list → **user approves** → Instacart carts filled across stores → **user reviews and
+checks out**. Generative AI proposes meals and picks products; code does all arithmetic and every pass/fail check.
+
+**Run it:** [app/INSTALL.md](app/INSTALL.md). **Test it:** `pip install -r app/requirements.txt && pytest -q --ignore=tests/test_session.py`.
+
+## Checkpoint 3 Deliverables
+
+| Deliverable | Purpose |
+|---|---|
+| [`app/`](app/README.md) | Full source: FastAPI + LangGraph backend, Next.js page, Playwright shopper |
+| [`app/INSTALL.md`](app/INSTALL.md) | Step-by-step local setup and a 5-minute walkthrough |
+| [`app/.env.example`](app/.env.example) | Environment template, no keys |
+| [`app/prompts/`](app/prompts/README.md) | System and user prompts, model settings, reply schemas |
+| [`docs/architecture.md`](docs/architecture.md) | Architecture diagram ([png](docs/architecture.png), [interactive](docs/architecture.html)) and data flow |
+| [`docs/use-cases.md`](docs/use-cases.md) | Primary flow and edge-case walkthroughs, each mapped to its test |
+| [`docs/observability.md`](docs/observability.md) | Logging of latency, tokens, cost and errors; debugging recipes |
+| [`docs/safety_privacy.md`](docs/safety_privacy.md) | Risks, guardrails, privacy, fallbacks and how each is tested |
+| [`docs/feature-coverage.md`](docs/feature-coverage.md) | Each Checkpoint 2 feature against the app: implemented, partial or not built |
+| [`tests/`](tests/) | 268 unit and critical-path tests plus real-Chrome tests, using fake AI and a fake store |
+
 ---
 
 ## Milestones Roadmap
@@ -188,8 +215,8 @@ Safety refusals were often strong, but uncertainty handling varied: some outputs
 | Checkpoint | Deliverable | Status |
 |---|---|---|
 | Checkpoint 1 | Project kickoff, literature review, and proposal | ✅ Completed |
-| Checkpoint 2 | Prompt-based validation, theoretical analysis, concept refinement, design specification, and prototype | 🚧 In Progress |
-| Checkpoint 3 | Functional prototype with refined agentic workflow and validation mechanisms | ⏳ Upcoming |
+| Checkpoint 2 | Prompt-based validation, theoretical analysis, concept refinement, design specification, and prototype | ✅ Completed |
+| Checkpoint 3 | Functional prototype with refined agentic workflow and validation mechanisms | 🚧 In Progress |
 | Checkpoint 4 | Final system evaluation, documentation, presentation, and demonstration | ⏳ Upcoming |
 
 ---
@@ -229,5 +256,21 @@ Safety refusals were often strong, but uncertainty handling varied: some outputs
 │
 ├── DESIGN_SPEC.md
 │
-└── prototype/
-    └── Checkpoint 2 prototype materials
+├── prototype/
+│   └── Checkpoint 2 prototype materials
+│
+├── app/
+│   ├── INSTALL.md, .env.example, requirements.txt
+│   ├── prompts/
+│   ├── backend/ and frontend/
+│   └── scripts/
+│
+├── docs/
+│   ├── architecture.md / .png / .html
+│   ├── use-cases.md
+│   ├── observability.md
+│   ├── safety_privacy.md
+│   └── feature-coverage.md
+│
+└── tests/
+    └── unit and critical-path integration tests

@@ -4,3 +4,11 @@ __pycache__/
 .env
 node_modules/
 .venv/
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+profiles/
+.next/
+.pytest_cache/
+.env.local
